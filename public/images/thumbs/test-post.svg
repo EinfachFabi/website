@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071018"/>
+      <stop offset="100%" stop-color="#126b94"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="360" fill="url(#g)"/>
+  <rect width="640" height="360" fill="url(#grid)"/>
+  <circle cx="540" cy="80" r="140" fill="#59d0f7" opacity="0.12"/>
+  <rect x="36" y="36" width="568" height="288" rx="6" fill="rgba(7,16,24,0.45)" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
+  <rect x="64" y="68" width="150" height="30" rx="4" fill="#59d0f7" opacity="0.18"/>
+  <text x="78" y="88" fill="#59d0f7" font-family="system-ui, sans-serif" font-size="13" font-weight="800" letter-spacing="2">LINUX GUIDE</text>
+  <text x="64" y="175" fill="#f5f8fb" font-family="system-ui, sans-serif" font-size="36" font-weight="800" letter-spacing="-0.5">Terminal Setup &amp; Tweaks</text>
+  <rect x="64" y="205" width="120" height="5" rx="2.5" fill="#59d0f7"/>
+  <text x="565" y="290" text-anchor="end" fill="rgba(255,255,255,0.16)" font-family="monospace" font-size="68" font-weight="900">&gt;_</text>
+</svg>

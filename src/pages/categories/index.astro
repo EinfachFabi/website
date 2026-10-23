@@ -1,0 +1,197 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const categoryCounts = new Map<string, number>();
+const tagCounts = new Map<string, number>();
+for (const post of allPosts) {
+	categoryCounts.set(post.data.category, (categoryCounts.get(post.data.category) ?? 0) + 1);
+	for (const tag of post.data.tags ?? []) {
+		tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+	}
+}
+const categories = Array.from(categoryCounts.entries());
+const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
+const techCount = allPosts.filter((p) => p.data.category !== 'Travel').length;
+---
+
+<Layout title="Explore Topics | Fabi">
+	<section class="container listing-page">
+		<header class="article-header">
+			<p class="eyebrow">Taxonomy</p>
+			<h1 id="active-filter-title">Explore topics</h1>
+			<p class="lede">Select any topic or tag below to immediately view all matching posts.</p>
+
+			<div class="chips" style="margin-top: 1rem;" id="topic-chips">
+				<button type="button" class="chip is-active" data-topic="all">
+					All ({allPosts.length})
+				</button>
+				<button type="button" class="chip" data-topic="Tech">
+					All Tech ({techCount})
+				</button>
+				{categories.map(([cat, count]) => (
+					<button type="button" class="chip" data-topic={cat}>
+						{cat} ({count})
+					</button>
+				))}
+			</div>
+
+			{tags.length > 0 && (
+				<div class="chips" style="margin-top: 0.6rem;" id="tag-chips">
+					{tags.map(([tag, count]) => (
+						<button type="button" class="chip chip-tag" data-tag={tag}>
+							#{tag} ({count})
+						</button>
+					))}
+				</div>
+			)}
+		</header>
+
+		<div class="grid post-grid" id="topic-grid">
+			{allPosts.map((post) => {
+				const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
+					year: 'numeric',
+					month: 'long',
+					day: 'numeric',
+				});
+				const rawThumb = post.data.image;
+				const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
+				return (
+					<article
+						class="card card-link"
+						data-category={post.data.category}
+						data-tags={(post.data.tags ?? []).join(',')}
+					>
+						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
+							<img src={thumb} width="640" height="360" loading="lazy" alt="" />
+						</a>
+						<div class="card-body">
+							<p class="meta">
+								<time datetime={post.data.pubDate.toISOString().slice(0, 10)}>
+									{formattedDate}
+								</time>
+							</p>
+							<h2>
+								<a href={`/${post.id}/`}>{post.data.title}</a>
+							</h2>
+							<p>{post.data.description}</p>
+							<div class="chips">
+								<span class="chip">{post.data.category}</span>
+								{post.data.tags?.map((tag) => (
+									<button
+										type="button"
+										class="chip chip-tag card-tag-btn"
+										data-tag={tag}
+									>
+										#{tag}
+									</button>
+								))}
+							</div>
+						</div>
+					</article>
+				);
+			})}
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const topicChips = document.querySelectorAll<HTMLButtonElement>('#topic-chips .chip');
+	const tagChips = document.querySelectorAll<HTMLButtonElement>('#tag-chips .chip');
+	const cardTagBtns = document.querySelectorAll<HTMLButtonElement>('.card-tag-btn');
+	const cards = document.querySelectorAll<HTMLElement>('#topic-grid .card');
+	const titleEl = document.getElementById('active-filter-title');
+
+	function applyTopic(topic: string) {
+		topicChips.forEach((c) => {
+			c.classList.toggle('is-active', c.dataset.topic === topic);
+		});
+		tagChips.forEach((c) => c.classList.remove('is-active'));
+		cards.forEach((card) => {
+			const cat = card.dataset.category ?? '';
+			if (topic === 'all') {
+				card.style.display = 'flex';
+			} else if (topic === 'Tech') {
+				card.style.display = cat !== 'Travel' ? 'flex' : 'none';
+			} else {
+				card.style.display = cat === topic ? 'flex' : 'none';
+			}
+		});
+		if (titleEl) {
+			if (topic === 'all') {
+				titleEl.textContent = 'Explore topics';
+			} else if (topic === 'Tech') {
+				titleEl.textContent = 'Tech Guides & Tutorials';
+			} else if (topic === 'Travel') {
+				titleEl.textContent = 'Travel & Vacation Impressions';
+			} else {
+				titleEl.textContent = topic;
+			}
+		}
+	}
+
+	function applyTag(tag: string) {
+		topicChips.forEach((c) => c.classList.remove('is-active'));
+		tagChips.forEach((c) => {
+			c.classList.toggle('is-active', c.dataset.tag === tag);
+		});
+		cards.forEach((card) => {
+			const cardTags = (card.dataset.tags ?? '').split(',').filter(Boolean);
+			card.style.display = cardTags.includes(tag) ? 'flex' : 'none';
+		});
+		if (titleEl) {
+			titleEl.textContent = `#${tag}`;
+		}
+	}
+
+	const params = new URLSearchParams(window.location.search);
+	const urlTag = params.get('tag');
+	const urlTopic = params.get('topic');
+	if (urlTag) {
+		applyTag(urlTag);
+	} else if (urlTopic) {
+		applyTopic(urlTopic);
+	}
+
+	topicChips.forEach((chip) => {
+		chip.addEventListener('click', () => {
+			applyTopic(chip.dataset.topic ?? 'all');
+		});
+	});
+
+	tagChips.forEach((chip) => {
+		chip.addEventListener('click', () => {
+			if (chip.dataset.tag) applyTag(chip.dataset.tag);
+		});
+	});
+
+	cardTagBtns.forEach((btn) => {
+		btn.addEventListener('click', () => {
+			if (btn.dataset.tag) applyTag(btn.dataset.tag);
+		});
+	});
+</script>
+
+<style>
+	.article-header {
+		border-bottom: 1px solid var(--border);
+		margin-bottom: 1.5rem;
+		padding-bottom: 1.25rem;
+	}
+
+	button.chip {
+		cursor: pointer;
+		color: var(--text);
+	}
+
+	button.chip.is-active {
+		border-color: var(--accent);
+		background: var(--accent);
+		color: var(--accent-ink);
+		font-weight: 700;
+	}
+</style>

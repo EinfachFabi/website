@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="55%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#sky)"/>
+  <circle cx="490" cy="115" r="52" fill="#fde68a" opacity="0.85"/>
+  <polygon points="0,360 160,150 330,360" fill="#1e293b"/>
+  <polygon points="180,360 370,120 560,360" fill="#0f172a"/>
+  <polygon points="360,360 520,165 640,300 640,360" fill="#1e293b"/>
+  <rect x="36" y="36" width="568" height="288" rx="6" fill="rgba(7,16,24,0.35)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+  <rect x="64" y="68" width="160" height="30" rx="4" fill="#fbbf24" opacity="0.22"/>
+  <text x="78" y="88" fill="#fde68a" font-family="system-ui, sans-serif" font-size="13" font-weight="800" letter-spacing="2">TRAVEL &amp; ROADTRIP</text>
+  <text x="64" y="175" fill="#ffffff" font-family="system-ui, sans-serif" font-size="35" font-weight="800" letter-spacing="-0.5">Alps Roadtrip &amp; Peaks</text>
+  <rect x="64" y="205" width="120" height="5" rx="2.5" fill="#fbbf24"/>
+</svg>

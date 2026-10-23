@@ -1,0 +1,235 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const techPosts = allPosts.filter((p) => p.data.category !== 'Travel');
+
+const categoryCounts = new Map<string, number>();
+for (const post of techPosts) {
+	categoryCounts.set(post.data.category, (categoryCounts.get(post.data.category) ?? 0) + 1);
+}
+const categories = Array.from(categoryCounts.entries());
+---
+
+<Layout
+	title="Tech Guides & Experience | Fabi"
+	description="Practical Linux, homelab, networking, and system guides from hands-on experience."
+>
+	<section class="container listing-page">
+		<header class="article-header">
+			<p class="eyebrow">Technology &bull; Systems &bull; Homelab</p>
+			<h1 id="active-filter-title">Tech Guides &amp; Experience</h1>
+			<p class="lede">
+				Hands-on tutorials, Linux &amp; Windows configurations, homelab stacks, and practical system notes.
+			</p>
+
+			{categories.length > 1 && (
+				<div class="chips" style="margin-top: 1rem;" id="topic-chips">
+					<button type="button" class="chip is-active" data-topic="all">
+						All Tech ({techPosts.length})
+					</button>
+					{categories.map(([cat, count]) => (
+						<button type="button" class="chip" data-topic={cat}>
+							{cat} ({count})
+						</button>
+					))}
+				</div>
+			)}
+		</header>
+
+		<div class="grid post-grid" id="topic-grid">
+			{techPosts.map((post, idx) => {
+				const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
+					year: 'numeric',
+					month: 'long',
+					day: 'numeric',
+				});
+				const rawThumb = post.data.image;
+				const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
+				return (
+					<article class="card card-link" data-category={post.data.category}>
+						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
+							<img
+								src={thumb}
+								width="640"
+								height="360"
+								loading={idx < 4 ? 'eager' : 'lazy'}
+								alt=""
+							/>
+						</a>
+						<div class="card-body">
+							<p class="meta">
+								<time datetime={post.data.pubDate.toISOString().slice(0, 10)}>
+									{formattedDate}
+								</time>
+							</p>
+							<h2>
+								<a href={`/${post.id}/`}>{post.data.title}</a>
+							</h2>
+							<p>{post.data.description}</p>
+							<div class="chips">
+								<span class="chip">{post.data.category}</span>
+								{post.data.tags?.map((tag) => (
+									<a
+										class="chip chip-tag"
+										href={`/categories?tag=${encodeURIComponent(tag)}`}
+									>
+										#{tag}
+									</a>
+								))}
+							</div>
+						</div>
+					</article>
+				);
+			})}
+		</div>
+
+		<nav class="pagination" id="pagination" aria-label="Pagination"></nav>
+	</section>
+</Layout>
+
+<script>
+	const PER_PAGE = 12; // 4 columns x 3 rows
+	const chips = document.querySelectorAll<HTMLButtonElement>('#topic-chips .chip');
+	const allCards = Array.from(document.querySelectorAll<HTMLElement>('#topic-grid .card'));
+	const paginationEl = document.getElementById('pagination');
+
+	let activeTopic = 'all';
+	let currentPage = 1;
+
+	function getFilteredCards() {
+		return allCards.filter((card) => {
+			const cat = card.dataset.category ?? '';
+			return activeTopic === 'all' || cat === activeTopic;
+		});
+	}
+
+	function render() {
+		const filtered = getFilteredCards();
+		const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+		if (currentPage > totalPages) currentPage = totalPages;
+
+		const start = (currentPage - 1) * PER_PAGE;
+		const end = start + PER_PAGE;
+		const visibleSet = new Set(filtered.slice(start, end));
+
+		allCards.forEach((card) => {
+			card.style.display = visibleSet.has(card) ? 'flex' : 'none';
+		});
+
+		if (!paginationEl) return;
+
+		if (totalPages <= 1) {
+			paginationEl.innerHTML = '';
+			paginationEl.style.display = 'none';
+			return;
+		}
+
+		paginationEl.style.display = 'flex';
+		let html = `<button type="button" class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>← Prev</button>`;
+		for (let i = 1; i <= totalPages; i++) {
+			html += `<button type="button" class="page-btn ${i === currentPage ? 'is-active' : ''}" data-page="${i}" aria-current="${i === currentPage ? 'page' : 'false'}">${i}</button>`;
+		}
+		html += `<button type="button" class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>`;
+		paginationEl.innerHTML = html;
+
+		paginationEl.querySelectorAll<HTMLButtonElement>('.page-btn').forEach((btn) => {
+			btn.addEventListener('click', () => {
+				const targetPage = Number(btn.dataset.page);
+				if (targetPage >= 1 && targetPage <= totalPages && targetPage !== currentPage) {
+					currentPage = targetPage;
+					render();
+					window.scrollTo({ top: 0, behavior: 'smooth' });
+				}
+			});
+		});
+	}
+
+	chips.forEach((chip) => {
+		chip.addEventListener('click', () => {
+			activeTopic = chip.dataset.topic ?? 'all';
+			currentPage = 1;
+			chips.forEach((c) => c.classList.toggle('is-active', c.dataset.topic === activeTopic));
+			render();
+		});
+	});
+
+	render();
+</script>
+
+<style>
+	.article-header {
+		border-bottom: 1px solid var(--border);
+		margin-bottom: 1.5rem;
+		padding-bottom: 1.25rem;
+	}
+
+	.listing-page .post-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+
+	@media (width <= 1024px) {
+		.listing-page .post-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (width <= 600px) {
+		.listing-page .post-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	button.chip {
+		cursor: pointer;
+		color: var(--text);
+	}
+
+	button.chip.is-active {
+		border-color: var(--accent);
+		background: var(--accent);
+		color: var(--accent-ink);
+		font-weight: 700;
+	}
+
+	.pagination {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+		margin-top: 2rem;
+	}
+
+	.pagination :global(.page-btn) {
+		border: 1px solid var(--border);
+		background: var(--surface);
+		color: var(--text);
+		border-radius: var(--radius);
+		padding: 0.42rem 0.8rem;
+		font-size: 0.9rem;
+		font-weight: 700;
+		cursor: pointer;
+		transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+	}
+
+	.pagination :global(.page-btn:hover:not(:disabled)) {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.pagination :global(.page-btn.is-active) {
+		border-color: var(--accent);
+		background: var(--accent);
+		color: var(--accent-ink);
+	}
+
+	.pagination :global(.page-btn:disabled) {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+</style>

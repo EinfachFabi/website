@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About | FabiTech">
+	<section class="reading">
+		<header class="article-header">
+			<p class="eyebrow">Information</p>
+			<h1>About This Site</h1>
+			<p class="lede">
+				Independent tech guides, Linux &amp; Windows configurations, and system notes.
+			</p>
+		</header>
+
+		<div class="article-body">
+			<h2>How to Create a New Post</h2>
+			<p>
+				Create a new folder inside the year directory (e.g. <code>src/content/posts/2026/my-new-guide/</code>) and place your Markdown file (<code>my-new-guide.md</code>) and images (<code>thumb.svg</code>, photos) inside it. The Markdown filename determines the URL (<code>domain.de/my-new-guide/</code>):
+			</p>
+			<pre><code>---
+title: "My New Guide"
+description: "Quick summary of the post."
+pubDate: 2026-10-17
+category: "Linux"
+image: "./thumb.svg"
+tags: ["linux", "cli"]
+---
+
+Write your Markdown content here...</code></pre>
+		</div>
+	</section>
+</Layout>

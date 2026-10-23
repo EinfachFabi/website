@@ -1,0 +1,314 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('posts', ({ data }) => !data.draft);
+	return posts.map((post) => ({
+		params: { id: post.id },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+
+const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+
+const rawThumb = post.data.image;
+const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<Layout title={`${post.data.title} | FabiTech`} description={post.data.description}>
+	<div class="reading-progress" data-reading-progress aria-hidden="true"></div>
+
+	<article class="article-shell container">
+		{tocHeadings.length > 0 && (
+			<aside class="article-toc" aria-label="On this page">
+				<details class="article-toc-details" open>
+					<summary>On this page</summary>
+					<nav data-toc>
+						<p class="eyebrow">On this page</p>
+						<ol>
+							{tocHeadings.map((h) => (
+								<li class:list={[{ nested: h.depth === 3 }]}>
+									<a href={`#${h.slug}`}>{h.text}</a>
+								</li>
+							))}
+						</ol>
+					</nav>
+				</details>
+			</aside>
+		)}
+
+		<div class="reading">
+			<header class="article-header">
+				<p class="eyebrow">Article</p>
+				<h1>{post.data.title}</h1>
+				<p class="meta">
+					<time datetime={post.data.pubDate.toISOString().slice(0, 10)}>{formattedDate}</time>
+				</p>
+				<div class="chips">
+					<a
+						class="chip"
+						href={`/categories?topic=${encodeURIComponent(post.data.category)}`}
+					>
+						{post.data.category}
+					</a>
+					{post.data.tags?.map((tag) => (
+						<a
+							class="chip chip-tag"
+							href={`/categories?tag=${encodeURIComponent(tag)}`}
+						>
+							#{tag}
+						</a>
+					))}
+				</div>
+			</header>
+
+			<img
+				class="article-image"
+				src={thumb}
+				alt={`${post.data.title} featured image`}
+				width="1200"
+				height="675"
+			/>
+
+			<div class="article-body">
+				<Content />
+			</div>
+		</div>
+	</article>
+</Layout>
+
+<script>
+	// Add Copy button to all code blocks
+	document.querySelectorAll('.article-body pre').forEach((pre) => {
+		const button = document.createElement('button');
+		button.className = 'code-copy';
+		button.type = 'button';
+		button.textContent = 'Copy';
+
+		button.addEventListener('click', async () => {
+			const code = pre.querySelector('code')?.innerText ?? (pre as HTMLElement).innerText;
+			await navigator.clipboard.writeText(code);
+			button.textContent = 'Copied!';
+			setTimeout(() => {
+				button.textContent = 'Copy';
+			}, 1800);
+		});
+
+		pre.appendChild(button);
+	});
+
+	// Reading progress bar
+	const progressBar = document.querySelector<HTMLElement>('[data-reading-progress]');
+	window.addEventListener(
+		'scroll',
+		() => {
+			if (!progressBar) return;
+			const scrollTop = window.scrollY;
+			const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+			const pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+			progressBar.style.setProperty('--reading-progress', `${pct}%`);
+		},
+		{ passive: true }
+	);
+</script>
+
+<style is:global>
+	.reading-progress {
+		z-index: 30;
+		pointer-events: none;
+		background: linear-gradient(90deg, var(--accent) var(--reading-progress, 0%), transparent 0);
+		height: 3px;
+		position: fixed;
+		inset: 0 0 auto;
+	}
+
+	.article-header {
+		border-bottom: 1px solid var(--border);
+		margin-bottom: 1.25rem;
+		padding-bottom: 1.25rem;
+	}
+
+	.article-shell {
+		grid-template-columns: minmax(170px, 220px) minmax(0, 1fr);
+		gap: clamp(1.5rem, 3vw, 3rem);
+		display: grid;
+	}
+
+	.article-shell:not(:has(> .article-toc)) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.article-shell > .reading {
+		width: 100%;
+	}
+
+	.article-toc {
+		align-self: start;
+		position: sticky;
+		top: 5rem;
+	}
+
+	.article-toc-details > summary {
+		color: var(--accent);
+		cursor: pointer;
+		font-weight: 700;
+		display: none;
+	}
+
+	.article-toc ol {
+		border-left: 1px solid var(--border);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.article-toc li a {
+		color: var(--muted);
+		padding: 0.25rem 0 0.25rem 0.85rem;
+		font-size: 0.92rem;
+		line-height: 1.35;
+		text-decoration: none;
+		transition: color 0.15s, background-color 0.15s;
+		display: block;
+	}
+
+	.article-toc li a:hover {
+		color: var(--accent);
+		background: color-mix(in srgb, var(--surface) 80%, transparent);
+	}
+
+	.article-toc li.nested a {
+		padding-left: 1.55rem;
+		font-size: 0.86rem;
+	}
+
+	.article-image {
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		width: 100%;
+		margin-bottom: 1.5rem;
+	}
+
+	.article-body {
+		font-size: 1.08rem;
+	}
+
+	.article-body h2 {
+		max-width: 100%;
+		padding-bottom: 0.6rem;
+		display: inline-block;
+		margin-top: 2rem;
+	}
+
+	.article-body h2:after {
+		content: '';
+		background: linear-gradient(90deg, var(--accent), transparent);
+		border-radius: 999px;
+		width: 75%;
+		height: 3px;
+		margin-top: 0.6rem;
+		display: block;
+	}
+
+	.article-body h3 {
+		margin-top: 1.5rem;
+	}
+
+	.article-body :not(pre) > code {
+		background: var(--surface-2);
+		border: 1px solid var(--border);
+		padding: 0.12rem 0.38rem;
+		border-radius: var(--radius);
+		font-size: 0.9em;
+	}
+
+	.article-body pre {
+		border: 1px solid var(--border);
+		color: #eef6fa;
+		border-radius: var(--radius);
+		background: #061019 !important;
+		padding: 0.9rem;
+		position: relative;
+		overflow: auto;
+	}
+
+	.code-copy {
+		color: #fff;
+		border-radius: var(--radius);
+		cursor: pointer;
+		background: #142430;
+		border: 1px solid #496173;
+		padding: 0.2rem 0.45rem;
+		font-size: 0.78rem;
+		transition: background-color 0.15s, border-color 0.15s;
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+	}
+
+	.code-copy:hover {
+		border-color: var(--accent);
+		background: var(--code-copy-hover-bg);
+	}
+
+	.article-body table {
+		width: 100%;
+		border-collapse: collapse;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		background: var(--surface);
+		margin: 1.5rem 0;
+		font-size: 0.96rem;
+		overflow: hidden;
+	}
+
+	.article-body th,
+	.article-body td {
+		border: 1px solid var(--border);
+		padding: 0.65rem 0.85rem;
+		text-align: left;
+		vertical-align: top;
+	}
+
+	.article-body th {
+		background: var(--surface-2);
+		color: var(--text);
+		font-weight: 700;
+	}
+
+	.article-body tbody tr:nth-child(even) {
+		background: color-mix(in srgb, var(--surface-2) 45%, transparent);
+	}
+
+	@media (width <= 940px) {
+		.article-shell {
+			display: block;
+		}
+		.article-toc {
+			width: min(100%, var(--reading));
+			border: 1px solid var(--border);
+			background: var(--surface);
+			border-radius: var(--radius);
+			margin: 0 auto 1.25rem;
+			padding: 0.75rem 0.9rem;
+			position: static;
+		}
+		.article-toc-details > summary {
+			display: list-item;
+		}
+		.article-toc .eyebrow {
+			display: none;
+		}
+	}
+</style>

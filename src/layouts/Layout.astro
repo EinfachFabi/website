@@ -1,0 +1,994 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'Fabi | Tech Guides & Travel Impressions',
+	description = 'Practical Linux, homelab, and technology guides alongside travel stories and vacation impressions.',
+} = Astro.props;
+
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const searchIndex = allPosts.map((p) => ({
+	id: p.id,
+	title: p.data.title,
+	description: p.data.description,
+	category: p.data.category,
+	tags: p.data.tags,
+}));
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<title>{title}</title>
+		<script is:inline>
+			document.documentElement.classList.add('js');
+			const saved = localStorage.getItem('theme');
+			document.documentElement.dataset.theme = saved ?? 'light';
+		</script>
+	</head>
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+
+		<header class="site-header">
+			<nav class="nav container" aria-label="Primary navigation">
+				<a class="nav-logo" href="/" aria-label="Fabi Tech & Travel home">
+					<svg class="logo-svg" viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
+						<rect x="1.5" y="1.5" width="37" height="37" rx="8" class="logo-box" />
+						<path d="M8 29 L17.5 14.5 L23.5 23 L27.5 17.5 L33 29 Z" class="logo-mountain-fill" />
+						<path d="M8 29 L17.5 14.5 L23.5 23 L27.5 17.5 L33 29" class="logo-mountain-line" />
+						<path d="M9.5 10.5 L13.5 14 L9.5 17.5" class="logo-prompt" />
+						<line x1="15.5" y1="17.5" x2="20" y2="17.5" class="logo-cursor" />
+					</svg>
+					<span class="logo-wordmark">
+						<span class="logo-name">FABI</span>
+						<span class="logo-tagline">Tech &amp; Travel</span>
+					</span>
+				</a>
+
+				<button
+					class="icon-button search-toggle-mobile"
+					type="button"
+					data-search-toggle
+					aria-expanded="false"
+					aria-controls="search-panel"
+				>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="m21 21-4.34-4.34"></path>
+						<circle cx="11" cy="11" r="8"></circle>
+					</svg>
+					<span class="sr-only">Toggle search</span>
+				</button>
+
+				<button
+					class="menu-button icon-button"
+					type="button"
+					data-menu-toggle
+					aria-expanded="false"
+					aria-controls="primary-links"
+				>
+					<span class="menu-icon" aria-hidden="true"></span>
+					<span class="sr-only">Menu</span>
+				</button>
+
+				<div class="nav-links" id="primary-links" data-menu>
+					<a href="/">Articles</a>
+					<a href="/tech">Tech</a>
+					<a href="/travel">Travel</a>
+					<a href="/posts">All Posts</a>
+					<a href="/about">About</a>
+
+					<div class="nav-utilities">
+						<button
+							class="icon-button search-toggle-desktop"
+							type="button"
+							data-search-toggle
+							aria-expanded="false"
+							aria-controls="search-panel"
+							title="Search articles"
+						>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<path d="m21 21-4.34-4.34"></path>
+								<circle cx="11" cy="11" r="8"></circle>
+							</svg>
+							<span class="sr-only">Toggle search</span>
+						</button>
+
+						<button
+							class="icon-button"
+							type="button"
+							data-theme-toggle
+							aria-label="Toggle color theme"
+							title="Switch between White and Dark mode"
+						>
+							<span aria-hidden="true" data-theme-icon>☾</span>
+							<span class="sr-only">Change color theme</span>
+						</button>
+
+						<a
+							class="icon-button nav-social"
+							href="https://github.com"
+							target="_blank"
+							rel="noopener noreferrer"
+							title="GitHub"
+						>
+							<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+								<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+							</svg>
+							<span class="sr-only">GitHub</span>
+						</a>
+					</div>
+				</div>
+			</nav>
+		</header>
+
+		<div class="search-overlay" id="search-panel" data-search-panel hidden>
+			<div class="search-dialog" role="dialog" aria-modal="true" aria-label="Search">
+				<form role="search" data-search-form onsubmit="return false;">
+					<label for="search-query" class="sr-only">Search articles</label>
+					<div class="search-row">
+						<span class="search-icon">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<path d="m21 21-4.34-4.34"></path>
+								<circle cx="11" cy="11" r="8"></circle>
+							</svg>
+						</span>
+						<input id="search-query" name="s" type="search" autocomplete="off" placeholder="Search articles..." />
+					</div>
+				</form>
+				<div data-search-extra>
+					<p class="muted" aria-live="polite" data-search-status>Type to search articles...</p>
+					<div class="search-results-list" data-search-results></div>
+				</div>
+			</div>
+		</div>
+
+		<main id="main">
+			<slot />
+		</main>
+
+		<footer class="site-footer">
+			<div class="container">
+				<div class="footer-main">
+					<div class="footer-links">
+						<a href="/tech">Tech</a>
+						<a href="/travel">Travel</a>
+						<a href="/posts">All Posts</a>
+						<a href="/categories">Topics</a>
+						<a href="/about">About</a>
+					</div>
+					<div class="footer-social">
+						<a class="icon-button" href="https://github.com" target="_blank" rel="noopener noreferrer">
+							<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+								<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+							</svg>
+							<span class="sr-only">GitHub</span>
+						</a>
+					</div>
+				</div>
+				<p class="footer-copy">&copy; {new Date().getFullYear()} FabiTech</p>
+			</div>
+		</footer>
+
+		<script is:inline define:vars={{ searchIndex }}>
+			// Theme toggle (White/Light mode first, toggles to Dark)
+			const themeBtn = document.querySelector('[data-theme-toggle]');
+			const themeIcon = document.querySelector('[data-theme-icon]');
+
+			function syncThemeIcon() {
+				const current = document.documentElement.dataset.theme || 'light';
+				if (themeIcon) {
+					themeIcon.textContent = current === 'dark' ? '☀' : '☾';
+				}
+				if (themeBtn) {
+					themeBtn.setAttribute(
+						'aria-label',
+						current === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
+					);
+				}
+			}
+			syncThemeIcon();
+
+			themeBtn?.addEventListener('click', () => {
+				const current = document.documentElement.dataset.theme || 'light';
+				const next = current === 'light' ? 'dark' : 'light';
+				document.documentElement.dataset.theme = next;
+				localStorage.setItem('theme', next);
+				syncThemeIcon();
+			});
+
+			// Mobile menu toggle
+			const menuBtn = document.querySelector('[data-menu-toggle]');
+			const navLinks = document.querySelector('[data-menu]');
+			menuBtn?.addEventListener('click', () => {
+				const isOpen = navLinks?.hasAttribute('data-open');
+				if (isOpen) {
+					navLinks?.removeAttribute('data-open');
+					menuBtn.setAttribute('aria-expanded', 'false');
+				} else {
+					navLinks?.setAttribute('data-open', '');
+					menuBtn.setAttribute('aria-expanded', 'true');
+				}
+			});
+
+			// Search overlay modal
+			const searchPanel = document.querySelector('[data-search-panel]');
+			const searchInput = document.getElementById('search-query');
+			const searchResults = document.querySelector('[data-search-results]');
+			const searchStatus = document.querySelector('[data-search-status]');
+			const searchToggles = document.querySelectorAll('[data-search-toggle]');
+
+			function openSearch() {
+				if (!searchPanel) return;
+				searchPanel.removeAttribute('hidden');
+				document.documentElement.classList.add('search-open');
+				searchInput?.focus();
+				renderSearchResults('');
+			}
+
+			function closeSearch() {
+				if (!searchPanel) return;
+				searchPanel.setAttribute('hidden', '');
+				document.documentElement.classList.remove('search-open');
+			}
+
+			searchToggles.forEach((btn) => {
+				btn.addEventListener('click', () => {
+					if (searchPanel?.hasAttribute('hidden')) {
+						openSearch();
+					} else {
+						closeSearch();
+					}
+				});
+			});
+
+			searchPanel?.addEventListener('click', (e) => {
+				if (e.target === searchPanel) closeSearch();
+			});
+
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && !searchPanel?.hasAttribute('hidden')) {
+					closeSearch();
+				}
+			});
+
+			function renderSearchResults(q) {
+				if (!searchResults || !searchStatus) return;
+				const query = q.trim().toLowerCase();
+				const matches = !query
+					? searchIndex.slice(0, 6)
+					: searchIndex.filter((item) =>
+							`${item.title} ${item.description} ${item.category} ${item.tags.join(' ')}`
+								.toLowerCase()
+								.includes(query)
+						);
+
+				searchStatus.textContent = !query
+					? `Showing ${matches.length} recent articles:`
+					: `${matches.length} result(s) for "${q}":`;
+
+				searchResults.innerHTML = matches
+					.map(
+						(item) => `
+						<a class="search-result" href="/${item.id}/">
+							<span class="search-result-title">${item.title}</span>
+							<span class="search-result-arrow">→</span>
+						</a>`
+					)
+					.join('');
+			}
+
+			searchInput?.addEventListener('input', (e) => {
+				renderSearchResults(e.target.value);
+			});
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	/* Exact Chris Titus Tech CSS variables - Defaulting to Light (White) Mode first */
+	:root,
+	:root[data-theme='light'] {
+		color-scheme: light;
+		--bg: #f4f8fb;
+		--surface: #fff;
+		--surface-2: #e6f0f6;
+		--text: #101820;
+		--muted: #50606d;
+		--accent: #126b94;
+		--accent-strong: #07557c;
+		--accent-ink: #fff;
+		--border: #c6d5df;
+		--code-copy-hover-bg: #1c3140;
+		--shadow: 0 10px 30px #192f3e1f;
+		--radius: 2px;
+		--max: 1180px;
+		--reading: 760px;
+	}
+
+	:root[data-theme='dark'] {
+		color-scheme: dark;
+		--bg: #071018;
+		--surface: #0e1b26;
+		--surface-2: #162735;
+		--text: #f5f8fb;
+		--muted: #b2c1cd;
+		--accent: #59d0f7;
+		--accent-strong: #8addf8;
+		--accent-ink: #04141c;
+		--border: #2d4658;
+		--code-copy-hover-bg: #1c3140;
+		--shadow: 0 10px 30px #0000003d;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+		scroll-padding-top: 6rem;
+	}
+
+	html.search-open {
+		scrollbar-gutter: stable;
+		overflow: hidden;
+	}
+
+	body {
+		background: radial-gradient(
+				circle at 50% -20rem,
+				color-mix(in srgb, var(--accent) 13%, transparent),
+				transparent 44rem
+			),
+			var(--bg);
+		color: var(--text);
+		margin: 0;
+		font-family: 'PT Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+		font-size: 1rem;
+		line-height: 1.55;
+	}
+
+	a {
+		color: var(--accent);
+		text-underline-offset: 0.18em;
+	}
+
+	a:hover {
+		color: var(--accent-strong);
+	}
+
+	:focus-visible {
+		outline: 3px solid var(--accent);
+		outline-offset: 3px;
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	button,
+	input {
+		font: inherit;
+	}
+
+	.container,
+	.reading {
+		width: min(calc(100% - 1.5rem), var(--max));
+		margin-inline: auto;
+	}
+
+	.sr-only {
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		position: absolute;
+		overflow: hidden;
+	}
+
+	.skip-link {
+		background: var(--accent);
+		color: var(--accent-ink);
+		z-index: 100;
+		border-radius: var(--radius);
+		padding: 0.5rem 0.75rem;
+		font-weight: 700;
+		position: fixed;
+		top: 0.5rem;
+		left: 0.5rem;
+		transform: translateY(-200%);
+	}
+
+	.skip-link:focus {
+		transform: translateY(0);
+	}
+
+	.site-header {
+		z-index: 20;
+		border-bottom: 1px solid var(--border);
+		background: color-mix(in srgb, var(--bg) 90%, transparent);
+		backdrop-filter: blur(18px);
+		position: sticky;
+		top: 0;
+	}
+
+	.nav {
+		align-items: center;
+		gap: 0.75rem;
+		min-height: 60px;
+		display: flex;
+	}
+
+	.nav-logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.65rem;
+		text-decoration: none;
+		color: var(--text);
+	}
+
+	.nav-logo:hover .logo-box {
+		stroke: var(--accent);
+	}
+
+	.logo-svg {
+		flex-shrink: 0;
+		display: block;
+	}
+
+	.logo-box {
+		fill: var(--surface-2);
+		stroke: var(--border);
+		stroke-width: 1.75;
+		transition: stroke 0.15s ease;
+	}
+
+	.logo-mountain-fill {
+		fill: var(--accent);
+		opacity: 0.22;
+	}
+
+	.logo-mountain-line {
+		fill: none;
+		stroke: var(--accent);
+		stroke-width: 2.2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.logo-prompt {
+		fill: none;
+		stroke: var(--text);
+		stroke-width: 2.2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.logo-cursor {
+		stroke: var(--accent);
+		stroke-width: 2.2;
+		stroke-linecap: round;
+	}
+
+	.logo-wordmark {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.05;
+	}
+
+	.logo-name {
+		font-weight: 900;
+		font-size: 1.12rem;
+		letter-spacing: 0.04em;
+		color: var(--text);
+	}
+
+	.logo-tagline {
+		font-size: 0.68rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--accent);
+	}
+
+	.nav-links {
+		align-items: center;
+		gap: 0.8rem;
+		margin-left: auto;
+		display: flex;
+	}
+
+	.nav-links a:not(.primary-button) {
+		color: var(--text);
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.nav-links a:not(.primary-button):hover {
+		color: var(--accent);
+	}
+
+	.nav-utilities {
+		border-left: 1px solid var(--border);
+		align-items: center;
+		gap: 0.5rem;
+		padding-left: 0.8rem;
+		display: flex;
+	}
+
+	.menu-icon:before {
+		content: '☰';
+		font-size: 1.1em;
+		line-height: 1;
+	}
+
+	.menu-button[aria-expanded='true'] .menu-icon:before {
+		content: '✕';
+	}
+
+	.icon-button,
+	.primary-button {
+		border: 1px solid var(--border);
+		background: var(--surface);
+		color: var(--text);
+		border-radius: var(--radius);
+		cursor: pointer;
+		justify-content: center;
+		align-items: center;
+		padding: 0.38rem 0.65rem;
+		text-decoration: none;
+		display: inline-flex;
+	}
+
+	.icon-button svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	.icon-button:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.menu-button,
+	.search-toggle-mobile,
+	.search-toggle-desktop,
+	[data-theme-toggle],
+	.nav-social {
+		width: 2.25rem;
+		height: 2.25rem;
+		padding: 0;
+	}
+
+	.menu-button,
+	.search-toggle-mobile {
+		display: none;
+	}
+
+	.primary-button {
+		border-color: var(--accent);
+		background: var(--accent);
+		color: var(--accent-ink);
+		justify-content: center;
+		padding: 0.42rem 0.85rem;
+		font-weight: 700;
+		display: inline-flex;
+	}
+
+	.primary-button:hover {
+		background: var(--accent-strong);
+		color: var(--accent-ink);
+	}
+
+	.search-overlay {
+		z-index: 60;
+		backdrop-filter: blur(3px);
+		background: #000000b3;
+		justify-content: center;
+		align-items: flex-start;
+		padding: min(14vh, 6rem) 1rem 2rem;
+		display: flex;
+		position: fixed;
+		inset: 0;
+	}
+
+	.search-overlay[hidden] {
+		display: none;
+	}
+
+	.search-dialog {
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		background: var(--surface);
+		width: min(640px, 100%);
+		max-height: 75vh;
+		box-shadow: var(--shadow);
+		flex-direction: column;
+		gap: 0.6rem;
+		padding: 1rem;
+		display: flex;
+		overflow: hidden;
+	}
+
+	.search-dialog .search-row {
+		align-items: center;
+		display: flex;
+		position: relative;
+	}
+
+	.search-dialog .search-icon {
+		color: var(--muted);
+		pointer-events: none;
+		position: absolute;
+		top: 50%;
+		left: 0.75rem;
+		transform: translateY(-50%);
+	}
+
+	.search-dialog .search-icon svg {
+		width: 20px;
+		height: 20px;
+		display: block;
+	}
+
+	.search-dialog input[type='search'] {
+		border: 1px solid var(--border);
+		background: var(--bg);
+		width: 100%;
+		color: var(--text);
+		border-radius: var(--radius);
+		padding: 0.65rem 0.75rem 0.65rem 2.35rem;
+		font-size: 1.05rem;
+	}
+
+	.search-results-list {
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.1rem;
+		display: flex;
+		overflow-y: auto;
+	}
+
+	.search-result {
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		background: var(--surface);
+		color: var(--text);
+		justify-content: space-between;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.6rem 0.75rem;
+		text-decoration: none;
+		transition: border-color 0.12s, background-color 0.12s;
+		display: flex;
+	}
+
+	.search-result:hover,
+	.search-result:focus-visible {
+		background: var(--surface-2);
+		border-color: var(--accent);
+	}
+
+	.search-result-title {
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		min-width: 0;
+		overflow: hidden;
+	}
+
+	.search-result-arrow {
+		color: var(--accent);
+		flex-shrink: 0;
+	}
+
+	main {
+		min-height: 72vh;
+		padding-block: clamp(1.25rem, 3vw, 2.5rem);
+	}
+
+	.eyebrow {
+		color: var(--accent);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		margin: 0 0 0.35rem;
+		font-size: 0.78rem;
+		font-weight: 700;
+	}
+
+	h1,
+	h2,
+	h3 {
+		text-wrap: balance;
+		line-height: 1.12;
+	}
+
+	h1 {
+		letter-spacing: -0.035em;
+		margin: 0.25rem 0 0.7rem;
+		font-size: clamp(2rem, 4.5vw, 3.5rem);
+	}
+
+	h2 {
+		font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+	}
+
+	.lede {
+		color: var(--muted);
+		max-width: 65ch;
+		font-size: clamp(1.08rem, 1.8vw, 1.25rem);
+	}
+
+	.meta,
+	.muted {
+		color: var(--muted);
+	}
+
+	.grid {
+		gap: 0.85rem;
+		display: grid;
+	}
+
+	.post-grid {
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+	}
+
+	.card {
+		border: 1px solid var(--border);
+		background: var(--surface);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+		flex-direction: column;
+		display: flex;
+		position: relative;
+		overflow: clip;
+	}
+
+	.card-link {
+		transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+	}
+
+	.card-link .card-body h2 a:after,
+	.card-link .card-body h3 a:after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+
+	.card-link:hover {
+		border-color: var(--accent);
+		transform: translateY(-3px);
+		box-shadow: 0 14px 32px #0003;
+	}
+
+	.card img {
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		width: 100%;
+	}
+
+	.card-link img {
+		transition: transform 0.25s;
+	}
+
+	.card-link:hover img {
+		transform: scale(1.04);
+	}
+
+	.card-body {
+		flex-direction: column;
+		flex: 1;
+		padding: 0.9rem;
+		display: flex;
+	}
+
+	.card-body .meta {
+		margin: 0 0 0.25rem;
+		font-size: 0.88rem;
+	}
+
+	.card-body .chips {
+		z-index: 1;
+		margin-top: auto;
+		padding-top: 0.5rem;
+		position: relative;
+	}
+
+	.card h2,
+	.card h3 {
+		margin: 0.2rem 0 0.5rem;
+		font-size: 1.22rem;
+	}
+
+	.card h2 a,
+	.card h3 a {
+		color: var(--text);
+		text-decoration: none;
+	}
+
+	.chips {
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		display: flex;
+	}
+
+	.chip {
+		border: 1px solid var(--border);
+		background: color-mix(in srgb, var(--surface) 80%, transparent);
+		border-radius: var(--radius);
+		align-items: center;
+		padding: 0.2rem 0.5rem;
+		font-size: 0.85rem;
+		text-decoration: none;
+		transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+		display: inline-flex;
+	}
+
+	.chip:hover {
+		border-color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 15%, transparent);
+		color: var(--accent-strong);
+	}
+
+	.chip-tag {
+		color: var(--muted);
+		background: var(--surface-2);
+		font-size: 0.78rem;
+		padding: 0.16rem 0.45rem;
+	}
+
+	.btn {
+		background: var(--accent);
+		color: var(--accent-ink);
+		box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 25%, transparent);
+		border-radius: 8px;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.6rem 1.25rem;
+		font-weight: 700;
+		text-decoration: none;
+		transition: background-color 0.15s, box-shadow 0.15s, transform 0.15s;
+		display: inline-flex;
+	}
+
+	.btn:hover {
+		background: var(--accent-strong);
+		color: var(--accent-ink);
+		box-shadow: 0 6px 18px color-mix(in srgb, var(--accent-strong) 30%, transparent);
+		transform: translateY(-2px);
+	}
+
+	.site-footer {
+		border-top: 1px solid var(--border);
+		color: var(--muted);
+		padding-block: 1.5rem;
+	}
+
+	.footer-main {
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 1rem;
+		display: flex;
+	}
+
+	.footer-links {
+		flex-wrap: wrap;
+		gap: 0.4rem 1.25rem;
+		font-size: 0.9rem;
+		display: flex;
+	}
+
+	.footer-links a {
+		color: var(--muted);
+		text-decoration: none;
+	}
+
+	.footer-links a:hover {
+		color: var(--accent);
+		text-decoration: underline;
+	}
+
+	.footer-social {
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		display: flex;
+	}
+
+	.footer-social .icon-button {
+		width: 2.25rem;
+		height: 2.25rem;
+		color: var(--muted);
+		background: transparent;
+		padding: 0;
+	}
+
+	.footer-social .icon-button:hover {
+		color: var(--accent);
+	}
+
+	.footer-copy {
+		font-size: 0.85rem;
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.nav {
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 0.5rem;
+			min-height: 56px;
+			padding-block: 0.4rem;
+		}
+		.nav-logo {
+			font-size: 1.05rem;
+			gap: 0.45rem;
+			margin-right: auto;
+			white-space: nowrap;
+			min-width: 0;
+		}
+		.logo-title {
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.search-toggle-mobile {
+			display: inline-flex;
+			margin-left: auto;
+			flex-shrink: 0;
+		}
+		.menu-button {
+			display: inline-flex;
+			flex-shrink: 0;
+		}
+		.nav-links .search-toggle-desktop {
+			display: none;
+		}
+		.nav-links {
+			display: none;
+			flex-direction: column;
+			order: 3;
+			align-items: center;
+			text-align: center;
+			flex-basis: 100%;
+			width: 100%;
+			margin: 0.35rem 0 0;
+			padding: 0.6rem 0 0.25rem;
+			border-top: 1px solid var(--border);
+			gap: 0.35rem;
+		}
+		.nav-links[data-open] {
+			display: flex;
+		}
+		.nav-links a {
+			padding: 0.4rem 0.25rem;
+		}
+		.nav-utilities {
+			border-left: none;
+			border-top: 1px solid var(--border);
+			justify-content: center;
+			width: 100%;
+			margin-top: 0.35rem;
+			padding-top: 0.6rem;
+			padding-left: 0;
+		}
+	}
+</style>

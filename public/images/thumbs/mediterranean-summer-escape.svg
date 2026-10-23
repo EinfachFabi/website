@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <defs>
+    <linearGradient id="sunset" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c4a6e"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#fb7185"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#sunset)"/>
+  <circle cx="500" cy="130" r="60" fill="#fed7aa" opacity="0.75"/>
+  <path d="M0,260 Q160,235 320,260 T640,255 L640,360 L0,360 Z" fill="#082f49" opacity="0.85"/>
+  <path d="M0,295 Q160,275 320,295 T640,290 L640,360 L0,360 Z" fill="#041e30" opacity="0.95"/>
+  <rect x="36" y="36" width="568" height="288" rx="6" fill="rgba(7,16,24,0.32)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+  <rect x="64" y="68" width="160" height="30" rx="4" fill="#38bdf8" opacity="0.25"/>
+  <text x="78" y="88" fill="#bae6fd" font-family="system-ui, sans-serif" font-size="13" font-weight="800" letter-spacing="2">VACATION NOTES</text>
+  <text x="64" y="175" fill="#ffffff" font-family="system-ui, sans-serif" font-size="35" font-weight="800" letter-spacing="-0.5">Mediterranean Coast</text>
+  <rect x="64" y="205" width="120" height="5" rx="2.5" fill="#bae6fd"/>
+</svg>

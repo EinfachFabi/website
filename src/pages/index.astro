@@ -1,0 +1,298 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// 3 Featured posts (either explicitly marked featured: true, or fallback to top 3)
+// const explicitlyFeatured = allPosts.filter((p) => p.data.featured);
+// const featuredPosts = (explicitlyFeatured.length >= 3 ? explicitlyFeatured : allPosts).slice(0, 3);
+
+// Latest posts
+const latestPosts = allPosts.slice(0, 6);
+
+const techCount = allPosts.filter((p) => p.data.category !== 'Travel').length;
+const travelCount = allPosts.filter((p) => p.data.category === 'Travel').length;
+
+// Collect categories (topics) with counts for "Explore topics"
+const categoryCounts = new Map<string, number>();
+for (const post of allPosts) {
+	categoryCounts.set(post.data.category, (categoryCounts.get(post.data.category) ?? 0) + 1);
+}
+const categories = Array.from(categoryCounts.entries());
+---
+
+<Layout title="Fabi | Tech Guides & Travel Impressions">
+	<section class="home-hero container">
+		<p class="eyebrow">Technology &bull; Linux &bull; Travel &amp; Impressions</p>
+		<h1>Tech Guides, Systems &amp; Travel Impressions.</h1>
+		<p class="lede">
+			Hands-on Linux, homelab, and system tutorials alongside personal travel stories, roadtrips, and vacation impressions.
+		</p>
+
+		<div class="topic-cards">
+			<a class="topic-card" href="/tech">
+				<span class="topic-card-icon" aria-hidden="true">
+					<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<polyline points="4 17 10 11 4 5"></polyline>
+						<line x1="12" y1="19" x2="20" y2="19"></line>
+					</svg>
+				</span>
+				<span class="topic-card-body">
+					<span class="topic-card-title">Tech Guides &amp; Experience</span>
+					<span class="topic-card-desc">Linux, Homelab, Server &amp; System Tweaks ({techCount} Posts)</span>
+				</span>
+				<span class="topic-card-arrow" aria-hidden="true">→</span>
+			</a>
+
+			<a class="topic-card" href="/travel">
+				<span class="topic-card-icon" aria-hidden="true">
+					<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
+					</svg>
+				</span>
+				<span class="topic-card-body">
+					<span class="topic-card-title">Travel &amp; Impressions</span>
+					<span class="topic-card-desc">Trips, Roadtrips &amp; Vacation Impressions ({travelCount} Posts)</span>
+				</span>
+				<span class="topic-card-arrow" aria-hidden="true">→</span>
+			</a>
+		</div>
+	</section>
+
+	{/*
+	<section class="container home-featured" aria-labelledby="featured-heading">
+		<h2 id="featured-heading">Featured</h2>
+
+		<div class="grid home-three-grid">
+			{featuredPosts.map((post, idx) => {
+				const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
+					year: 'numeric',
+					month: 'long',
+					day: 'numeric',
+				});
+				const rawThumb = post.data.image;
+				const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
+				return (
+					<article class="card card-link">
+						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
+							<img
+								src={thumb}
+								width="640"
+								height="360"
+								loading={idx === 0 ? 'eager' : 'lazy'}
+								alt=""
+							/>
+						</a>
+						<div class="card-body">
+							<p class="meta">
+								<time datetime={post.data.pubDate.toISOString().slice(0, 10)}>
+									{formattedDate}
+								</time>
+							</p>
+							<h3>
+								<a href={`/${post.id}/`}>{post.data.title}</a>
+							</h3>
+							<p>{post.data.description}</p>
+							<div class="chips">
+								<a
+									class="chip"
+									href={`/categories?topic=${encodeURIComponent(post.data.category)}`}
+								>
+									{post.data.category}
+								</a>
+								{post.data.tags?.map((tag) => (
+									<a
+										class="chip chip-tag"
+										href={`/categories?tag=${encodeURIComponent(tag)}`}
+									>
+										#{tag}
+									</a>
+								))}
+							</div>
+						</div>
+					</article>
+				);
+			})}
+		</div>
+	</section>
+	*/}
+
+	<section class="container home-latest" aria-labelledby="latest-heading">
+		<h2 id="latest-heading">Latest articles</h2>
+
+		<div class="grid post-grid">
+			{latestPosts.map((post) => {
+				const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
+					year: 'numeric',
+					month: 'long',
+					day: 'numeric',
+				});
+				const rawThumb = post.data.image;
+				const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
+				return (
+					<article class="card card-link">
+						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
+							<img src={thumb} width="640" height="360" loading="lazy" alt="" />
+						</a>
+						<div class="card-body">
+							<p class="meta">
+								<time datetime={post.data.pubDate.toISOString().slice(0, 10)}>
+									{formattedDate}
+								</time>
+							</p>
+							<h3>
+								<a href={`/${post.id}/`}>{post.data.title}</a>
+							</h3>
+							<p>{post.data.description}</p>
+							<div class="chips">
+								<a
+									class="chip"
+									href={`/categories?topic=${encodeURIComponent(post.data.category)}`}
+								>
+									{post.data.category}
+								</a>
+								{post.data.tags?.map((tag) => (
+									<a
+										class="chip chip-tag"
+										href={`/categories?tag=${encodeURIComponent(tag)}`}
+									>
+										#{tag}
+									</a>
+								))}
+							</div>
+						</div>
+					</article>
+				);
+			})}
+		</div>
+
+		<p class="home-latest-cta">
+			<a class="btn" href="/posts">
+				Browse all articles <span aria-hidden="true">→</span>
+			</a>
+		</p>
+	</section>
+
+	<section class="container home-topics" aria-labelledby="topics-heading">
+		<h2 id="topics-heading">Explore topics</h2>
+		<div class="chips">
+			{categories.map(([cat, count]) => (
+				<a class="chip" href={`/categories?topic=${encodeURIComponent(cat)}`}>
+					{cat} ({count})
+				</a>
+			))}
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.home-hero {
+		padding-top: clamp(0.5rem, 1.5vw, 1rem);
+	}
+
+	.topic-cards {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.85rem;
+		margin-top: 1.5rem;
+	}
+
+	.topic-card {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem 1.25rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		background: var(--surface);
+		box-shadow: var(--shadow);
+		color: var(--text);
+		text-decoration: none;
+		transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+	}
+
+	.topic-card:hover {
+		border-color: var(--accent);
+		color: var(--text);
+		transform: translateY(-2px);
+		box-shadow: 0 14px 32px #0003;
+	}
+
+	.topic-card-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: var(--radius);
+		background: var(--surface-2);
+		border: 1px solid var(--border);
+		color: var(--accent);
+		flex-shrink: 0;
+	}
+
+	.topic-card-body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		min-width: 0;
+		flex: 1;
+	}
+
+	.topic-card-title {
+		font-weight: 700;
+		font-size: 1.12rem;
+		line-height: 1.25;
+	}
+
+	.topic-card-desc {
+		color: var(--muted);
+		font-size: 0.9rem;
+		line-height: 1.35;
+	}
+
+	.topic-card-arrow {
+		color: var(--accent);
+		font-size: 1.2rem;
+		font-weight: 700;
+		flex-shrink: 0;
+		transition: transform 0.15s;
+	}
+
+	.topic-card:hover .topic-card-arrow {
+		transform: translateX(3px);
+	}
+
+	.home-featured,
+	.home-latest,
+	.home-topics {
+		padding-top: 28px;
+	}
+
+	.home-featured h2,
+	.home-latest h2,
+	.home-topics h2 {
+		margin-top: 0;
+		margin-bottom: 1rem;
+	}
+
+	.home-three-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.home-latest-cta {
+		text-align: right;
+		margin-top: 1.25rem;
+		margin-bottom: 0;
+	}
+
+	@media (width <= 860px) {
+		.topic-cards,
+		.home-three-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
