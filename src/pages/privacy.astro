@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const tocHeadings = [
+	{ slug: 'information-collection-and-use', text: 'Information Collection and Use' },
+	{ slug: 'log-data', text: 'Log Data' },
+	{ slug: 'cookies-and-local-storage', text: 'Cookies and Local Storage' },
+	{ slug: 'third-party-services', text: 'Third-Party Services' },
+	{ slug: 'links-to-other-sites', text: 'Links to Other Sites' },
+	{ slug: 'changes-to-this-privacy-policy', text: 'Changes to This Privacy Policy' },
+	{ slug: 'contact-us', text: 'Contact Us' },
+];
+---
+
+<Layout title="Privacy Policy | EinfachFabi" description="Privacy Policy for EinfachFabi.">
+	<article class="article-shell container">
+		<aside class="article-toc" aria-label="On this page">
+			<details class="article-toc-details" open>
+				<summary>On this page</summary>
+				<nav data-toc>
+					<p class="eyebrow">On this page</p>
+					<ol>
+						{tocHeadings.map((h) => (
+							<li>
+								<a href={`#${h.slug}`}>{h.text}</a>
+							</li>
+						))}
+					</ol>
+				</nav>
+			</details>
+		</aside>
+
+		<div class="reading">
+			<header class="article-header">
+				<h1>Privacy Policy</h1>
+				<p class="meta">Last updated: October 24, 2026</p>
+			</header>
+
+			<div class="article-body">
+				<p>
+					Fabian operates this website, which provides the SERVICE.
+				</p>
+				<p>
+					This page is used to inform website visitors regarding our policies with the collection, use, and disclosure of Personal Information if anyone decides to use our Service.
+				</p>
+				<p>
+					<strong>In short: We do not collect, store, track, or share any personal data from visitors.</strong>
+				</p>
+
+				<h2 id="information-collection-and-use">Information Collection and Use</h2>
+				<p>
+					We do not require or ask you to provide any personally identifiable information (such as your name, email address, phone number, or postal address) to browse and use this website. There are no user accounts, registration forms, newsletters, or tracking scripts on this site, and we do not sell, rent, or share any visitor data with third parties.
+				</p>
+
+				<h2 id="log-data">Log Data</h2>
+				<p>
+					We do not run any analytics or tracking tools to profile visitors or monitor your browsing behavior across pages. Standard technical requests (such as your browser requesting a web page or image) are handled solely to deliver the static website content to your device and are not used by us to identify or track individual users.
+				</p>
+
+				<h2 id="cookies-and-local-storage">Cookies and Local Storage</h2>
+				<p>
+					This website does not use any tracking, advertising, or analytics cookies.
+				</p>
+				<p>
+					The only setting stored in your browser is your visual theme preference (Light or Dark mode) via your browser’s local storage (<code>localStorage</code>). This value stays strictly on your own device and is never transmitted to us or any third party.
+				</p>
+
+				<h2 id="third-party-services">Third-Party Services</h2>
+				<p>
+					We do not embed third-party advertising networks, marketing trackers, or external analytics providers on this website. All articles, scripts, and search functionality run locally in your browser without sending your search queries or reading history to external servers.
+				</p>
+
+				<h2 id="links-to-other-sites">Links to Other Sites</h2>
+				<p>
+					Our Service may contain links to external sites (such as GitHub or Instagram). If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by us. Therefore, we strongly advise you to review the Privacy Policy of those websites. We have no control over, and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
+				</p>
+
+				<h2 id="changes-to-this-privacy-policy">Changes to This Privacy Policy</h2>
+				<p>
+					We may update our Privacy Policy from time to time. Thus, we advise you to review this page periodically for any changes. Any changes are effective immediately after they are posted on this page.
+				</p>
+
+				<h2 id="contact-us">Contact Us</h2>
+				<p>
+					If you have any questions or suggestions about this Privacy Policy, feel free to reach out via <a href="https://github.com/EinfachFabi/website" target="_blank" rel="noopener noreferrer">GitHub</a> or <a href="https://www.instagram.com/einfachfabi_2204" target="_blank" rel="noopener noreferrer">Instagram</a>.
+				</p>
+			</div>
+		</div>
+	</article>
+</Layout>

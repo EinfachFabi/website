@@ -1,0 +1,111 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const tocHeadings = [
+	{ slug: 'use-of-content-and-guides', text: 'Use of Content and Technical Guides' },
+	{ slug: 'accounts-and-communications', text: 'Accounts and Communications' },
+	{ slug: 'intellectual-property', text: 'Intellectual Property' },
+	{ slug: 'links-to-other-web-sites', text: 'Links to Other Web Sites' },
+	{ slug: 'termination', text: 'Termination' },
+	{ slug: 'governing-law', text: 'Governing Law' },
+	{ slug: 'changes', text: 'Changes' },
+	{ slug: 'contact-us', text: 'Contact Us' },
+];
+---
+
+<Layout title="Terms and Conditions | EinfachFabi" description="Terms and Conditions for EinfachFabi.">
+	<article class="article-shell container">
+		<aside class="article-toc" aria-label="On this page">
+			<details class="article-toc-details" open>
+				<summary>On this page</summary>
+				<nav data-toc>
+					<p class="eyebrow">On this page</p>
+					<ol>
+						{tocHeadings.map((h) => (
+							<li>
+								<a href={`#${h.slug}`}>{h.text}</a>
+							</li>
+						))}
+					</ol>
+				</nav>
+			</details>
+		</aside>
+
+		<div class="reading">
+			<header class="article-header">
+				<h1>Terms and Conditions</h1>
+				<p class="meta">Last updated: October 24, 2026</p>
+			</header>
+
+			<div class="article-body">
+				<p>
+					Please read these Terms and Conditions ("Terms", "Terms of Service") carefully before using this website (the "Service") operated by Fabian ("EinfachFabi", "us", "we", or "our").
+				</p>
+				<p>
+					Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users, and others who access or use the Service.
+				</p>
+				<p>
+					By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service.
+				</p>
+
+				<h2 id="use-of-content-and-guides">Use of Content and Technical Guides</h2>
+				<p>
+					All articles, Linux and homelab guides, configuration examples, scripts, and travel impressions published on this website are provided strictly for informational and educational purposes on an "as is" basis.
+				</p>
+				<p>
+					While we strive to keep technical notes accurate and up to date, system configurations and software environments vary. You are solely responsible for verifying any commands, scripts, or configuration changes before running them on your own systems, and we assume no liability for any data loss, system downtime, or damages resulting from the use of information on this website.
+				</p>
+
+				<h2 id="accounts-and-communications">Accounts and Communications</h2>
+				<p>
+					This website is a static informational site and does not offer user accounts, member registrations, or automated SMS/email marketing programs. You do not need to create an account or subscribe to any messaging service to browse or use any part of our Service.
+				</p>
+
+				<h2 id="intellectual-property">Intellectual Property</h2>
+				<p>
+					Unless otherwise stated, the original articles, photography, travel impressions, and visual design on this website are the intellectual property of Fabian (EinfachFabi). You may reference and share links to our posts or use code snippets in your personal projects, provided you do not republish full articles or photographs as your own without permission.
+				</p>
+
+				<h2 id="links-to-other-web-sites">Links to Other Web Sites</h2>
+				<p>
+					Our Service may contain links to third-party web sites or services (such as GitHub or Instagram) that are not owned or controlled by us.
+				</p>
+				<p>
+					We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party web sites or services. You further acknowledge and agree that we shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods, or services available on or through any such web sites or services.
+				</p>
+				<p>
+					We strongly advise you to read the terms and conditions and privacy policies of any third-party web sites or services that you visit.
+				</p>
+
+				<h2 id="termination">Termination</h2>
+				<p>
+					We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
+				</p>
+				<p>
+					All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.
+				</p>
+
+				<h2 id="governing-law">Governing Law</h2>
+				<p>
+					These Terms shall be governed and construed in accordance with applicable laws, without regard to its conflict of law provisions.
+				</p>
+				<p>
+					Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect. These Terms constitute the entire agreement between us regarding our Service, and supersede and replace any prior agreements we might have between us regarding the Service.
+				</p>
+
+				<h2 id="changes">Changes</h2>
+				<p>
+					We reserve the right, at our sole discretion, to modify or replace these Terms at any time. Any changes become effective immediately when posted on this page.
+				</p>
+				<p>
+					By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service.
+				</p>
+
+				<h2 id="contact-us">Contact Us</h2>
+				<p>
+					If you have any questions about these Terms, feel free to reach out via <a href="https://github.com/EinfachFabi/website" target="_blank" rel="noopener noreferrer">GitHub</a> or <a href="https://www.instagram.com/einfachfabi_2204" target="_blank" rel="noopener noreferrer">Instagram</a>.
+				</p>
+			</div>
+		</div>
+	</article>
+</Layout>
