@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
@@ -23,17 +24,28 @@ const allPosts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 					day: 'numeric',
 				});
 				const rawThumb = post.data.image;
-				const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
+				const fallbackThumb = typeof rawThumb === 'string' ? rawThumb : `/images/thumbs/default.svg`;
 				return (
 					<article class="card card-link">
 						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
-							<img
-								src={thumb}
-								width="640"
-								height="360"
-								loading={idx < 4 ? 'eager' : 'lazy'}
-								alt=""
-							/>
+							{rawThumb && typeof rawThumb !== 'string' ? (
+								<Image
+									src={rawThumb}
+									width={680}
+									height={382}
+									format="webp"
+									loading={idx < 4 ? 'eager' : 'lazy'}
+									alt=""
+								/>
+							) : (
+								<img
+									src={fallbackThumb}
+									width="680"
+									height="382"
+									loading={idx < 4 ? 'eager' : 'lazy'}
+									alt=""
+								/>
+							)}
 						</a>
 						<div class="card-body">
 							<p class="meta">

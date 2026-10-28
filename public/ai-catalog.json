@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "name": "EinfachFabi",
+  "description": "Practical Linux, homelab, and technology guides alongside travel stories and vacation impressions.",
+  "endpoints": [
+    {
+      "url": "https://einfachfabi.com/llms.txt",
+      "type": "llms.txt"
+    },
+    {
+      "url": "https://einfachfabi.com/sitemap-index.xml",
+      "type": "sitemap"
+    }
+  ]
+}

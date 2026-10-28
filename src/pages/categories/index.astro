@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
@@ -59,7 +60,7 @@ const techCount = allPosts.filter((p) => p.data.category !== 'Travel').length;
 					day: 'numeric',
 				});
 				const rawThumb = post.data.image;
-				const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
+				const fallbackThumb = typeof rawThumb === 'string' ? rawThumb : `/images/thumbs/default.svg`;
 				return (
 					<article
 						class="card card-link"
@@ -67,7 +68,18 @@ const techCount = allPosts.filter((p) => p.data.category !== 'Travel').length;
 						data-tags={(post.data.tags ?? []).join(',')}
 					>
 						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
-							<img src={thumb} width="640" height="360" loading="lazy" alt="" />
+							{rawThumb && typeof rawThumb !== 'string' ? (
+								<Image
+									src={rawThumb}
+									width={680}
+									height={382}
+									format="webp"
+									loading="lazy"
+									alt=""
+								/>
+							) : (
+								<img src={fallbackThumb} width="680" height="382" loading="lazy" alt="" />
+							)}
 						</a>
 						<div class="card-body">
 							<p class="meta">

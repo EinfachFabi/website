@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
@@ -20,7 +21,7 @@ const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
 });
 
 const rawThumb = post.data.image;
-const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
+const fallbackThumb = typeof rawThumb === 'string' ? rawThumb : `/images/thumbs/default.svg`;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
@@ -71,13 +72,28 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 				</div>
 			</header>
 
-			<img
-				class="article-image"
-				src={thumb}
-				alt={`${post.data.title} featured image`}
-				width="1200"
-				height="675"
-			/>
+			{rawThumb && typeof rawThumb !== 'string' ? (
+				<Image
+					class="article-image"
+					src={rawThumb}
+					alt={`${post.data.title} featured image`}
+					width={1200}
+					height={675}
+					format="webp"
+					loading="eager"
+					fetchpriority="high"
+				/>
+			) : (
+				<img
+					class="article-image"
+					src={fallbackThumb}
+					alt={`${post.data.title} featured image`}
+					width="1200"
+					height="675"
+					loading="eager"
+					fetchpriority="high"
+				/>
+			)}
 
 			<div class="article-body">
 				<Content />
