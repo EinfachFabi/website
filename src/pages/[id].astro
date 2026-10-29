@@ -105,6 +105,11 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 <script>
 	// Add Copy button to all code blocks
 	document.querySelectorAll('.article-body pre').forEach((pre) => {
+		const wrapper = document.createElement('div');
+		wrapper.className = 'code-block';
+		pre.parentNode?.insertBefore(wrapper, pre);
+		wrapper.appendChild(pre);
+
 		const button = document.createElement('button');
 		button.className = 'code-copy';
 		button.type = 'button';
@@ -119,7 +124,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 			}, 1800);
 		});
 
-		pre.appendChild(button);
+		wrapper.appendChild(button);
 	});
 
 	// Reading progress bar
@@ -249,14 +254,24 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 		font-size: 0.9em;
 	}
 
+	.code-block {
+		position: relative;
+		margin: 1rem 0;
+	}
+
 	.article-body pre {
 		border: 1px solid var(--border);
 		color: #eef6fa;
 		border-radius: var(--radius);
 		background: #061019 !important;
 		padding: 0.9rem;
+		margin: 1rem 0;
 		position: relative;
 		overflow: auto;
+	}
+
+	.code-block pre {
+		margin: 0;
 	}
 
 	.code-copy {
@@ -271,6 +286,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 		position: absolute;
 		top: 0.5rem;
 		right: 0.5rem;
+		z-index: 2;
 	}
 
 	.code-copy:hover {
