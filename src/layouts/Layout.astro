@@ -11,6 +11,11 @@ const {
 	description = 'Practical Linux, homelab, and technology guides alongside travel stories and vacation impressions.',
 } = Astro.props;
 
+const pathname = Astro.url.pathname.endsWith('/')
+	? Astro.url.pathname
+	: `${Astro.url.pathname}/`;
+const canonicalURL = new URL(pathname, Astro.site ?? 'https://einfachfabi.com');
+
 const allPosts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
@@ -32,8 +37,14 @@ const searchIndex = allPosts.map((p) => ({
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
+		<link rel="canonical" href={canonicalURL} />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="EinfachFabi" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalURL} />
 		<title>{title}</title>
 		<script is:inline>
 			document.documentElement.classList.add('js');
@@ -87,10 +98,10 @@ const searchIndex = allPosts.map((p) => ({
 
 				<div class="nav-links" id="primary-links" data-menu>
 					<a href="/">Articles</a>
-					<a href="/tech">Tech</a>
-					<a href="/travel">Travel</a>
-					<a href="/posts">All Posts</a>
-					<a href="/about">About</a>
+					<a href="/tech/">Tech</a>
+					<a href="/travel/">Travel</a>
+					<a href="/posts/">All Posts</a>
+					<a href="/about/">About</a>
 
 					<div class="nav-utilities">
 						<button
@@ -180,9 +191,9 @@ const searchIndex = allPosts.map((p) => ({
 			<div class="container">
 				<div class="footer-main">
 					<div class="footer-links">
-						<a href="/about">About</a>
-						<a href="/privacy">Privacy</a>
-						<a href="/terms">Terms</a>
+						<a href="/about/">About</a>
+						<a href="/privacy/">Privacy</a>
+						<a href="/terms/">Terms</a>
 					</div>
 					<div class="footer-social">
 						<a class="icon-button" href="https://www.instagram.com/einfachfabi_2204" target="_blank" rel="noopener noreferrer" title="Instagram">

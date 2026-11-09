@@ -34,7 +34,7 @@ const categories = Array.from(categoryCounts.entries());
 		</p>
 
 		<div class="topic-cards">
-			<a class="topic-card" href="/tech">
+			<a class="topic-card" href="/tech/">
 				<span class="topic-card-icon" aria-hidden="true">
 					<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<polyline points="4 17 10 11 4 5"></polyline>
@@ -48,7 +48,7 @@ const categories = Array.from(categoryCounts.entries());
 				<span class="topic-card-arrow" aria-hidden="true">→</span>
 			</a>
 
-			<a class="topic-card" href="/travel">
+			<a class="topic-card" href="/travel/">
 				<span class="topic-card-icon" aria-hidden="true">
 					<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
@@ -100,14 +100,14 @@ const categories = Array.from(categoryCounts.entries());
 							<div class="chips">
 								<a
 									class="chip"
-									href={`/categories?topic=${encodeURIComponent(post.data.category)}`}
+									href={`/categories/?topic=${encodeURIComponent(post.data.category)}`}
 								>
 									{post.data.category}
 								</a>
 								{post.data.tags?.map((tag) => (
 									<a
 										class="chip chip-tag"
-										href={`/categories?tag=${encodeURIComponent(tag)}`}
+										href={`/categories/?tag=${encodeURIComponent(tag)}`}
 									>
 										#{tag}
 									</a>
@@ -168,14 +168,14 @@ const categories = Array.from(categoryCounts.entries());
 							<div class="chips">
 								<a
 									class="chip"
-									href={`/categories?topic=${encodeURIComponent(post.data.category)}`}
+									href={`/categories/?topic=${encodeURIComponent(post.data.category)}`}
 								>
 									{post.data.category}
 								</a>
 								{post.data.tags?.map((tag) => (
 									<a
 										class="chip chip-tag"
-										href={`/categories?tag=${encodeURIComponent(tag)}`}
+										href={`/categories/?tag=${encodeURIComponent(tag)}`}
 									>
 										#{tag}
 									</a>
@@ -188,7 +188,7 @@ const categories = Array.from(categoryCounts.entries());
 		</div>
 
 		<p class="home-latest-cta">
-			<a class="btn" href="/posts">
+			<a class="btn" href="/posts/">
 				Browse all articles <span aria-hidden="true">→</span>
 			</a>
 		</p>
@@ -198,7 +198,7 @@ const categories = Array.from(categoryCounts.entries());
 		<h2 id="topics-heading">Explore topics</h2>
 		<div class="chips">
 			{categories.map(([cat, count]) => (
-				<a class="chip" href={`/categories?topic=${encodeURIComponent(cat)}`}>
+				<a class="chip" href={`/categories/?topic=${encodeURIComponent(cat)}`}>
 					{cat} ({count})
 				</a>
 			))}

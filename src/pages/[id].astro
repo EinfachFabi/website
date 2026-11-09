@@ -57,14 +57,14 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 				<div class="chips">
 					<a
 						class="chip"
-						href={`/categories?topic=${encodeURIComponent(post.data.category)}`}
+						href={`/categories/?topic=${encodeURIComponent(post.data.category)}`}
 					>
 						{post.data.category}
 					</a>
 					{post.data.tags?.map((tag) => (
 						<a
 							class="chip chip-tag"
-							href={`/categories?tag=${encodeURIComponent(tag)}`}
+							href={`/categories/?tag=${encodeURIComponent(tag)}`}
 						>
 							#{tag}
 						</a>

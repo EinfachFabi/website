@@ -69,7 +69,7 @@ const travelPosts = allPosts.filter((p) => p.data.category === 'Travel');
 								{post.data.tags?.map((tag) => (
 									<a
 										class="chip chip-tag"
-										href={`/categories?tag=${encodeURIComponent(tag)}`}
+										href={`/categories/?tag=${encodeURIComponent(tag)}`}
 									>
 										#{tag}
 									</a>

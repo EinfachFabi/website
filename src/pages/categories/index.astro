@@ -20,7 +20,10 @@ const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
 const techCount = allPosts.filter((p) => p.data.category !== 'Travel').length;
 ---
 
-<Layout title="Explore Topics | Fabi">
+<Layout
+	title="Explore Topics & Tags | EinfachFabi"
+	description="Browse all articles by category or tag—covering Linux, Windows, homelab guides, and travel impressions."
+>
 	<section class="container listing-page">
 		<header class="article-header">
 			<p class="eyebrow">Taxonomy</p>

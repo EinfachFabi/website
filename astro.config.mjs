@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://einfachfabi.com',
+	trailingSlash: 'always',
 	integrations: [sitemap()],
 	build: {
 		inlineStylesheets: 'always',
