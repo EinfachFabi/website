@@ -12,16 +12,14 @@ function escapeXml(value: string): string {
 		.replace(/'/g, '&apos;');
 }
 
-function absolutizeHtmlUrls(html: string, baseUrl: string): string {
+function cleanFeedHtml(html: string, baseUrl: string): string {
 	return html
+		// Convert root-relative src and href to absolute URLs
 		.replace(/\b(src|href)="\/(?!\/)/g, `$1="${baseUrl}/`)
-		.replace(/\bsrcset="([^"]+)"/g, (_match, srcset: string) => {
-			const updated = srcset
-				.split(',')
-				.map((part) => part.trim().replace(/^\/(?!\/)/, `${baseUrl}/`))
-				.join(', ');
-			return `srcset="${updated}"`;
-		});
+		// Strip Shiki syntax-highlighting <span> wrappers inside code blocks
+		.replace(/<\/?span\b[^>]*>/g, '')
+		// Strip inline style, class, tabindex, data-*, id, loading, and decoding attributes
+		.replace(/\s+(?:style|class|tabindex|id|loading|decoding|fetchpriority|data-[a-z0-9-]+)="[^"]*"/gi, '');
 }
 
 export const GET: APIRoute = async ({ site }) => {
@@ -39,7 +37,7 @@ export const GET: APIRoute = async ({ site }) => {
 		const postUrl = `${baseUrl}/${post.id}/`;
 		const { Content } = await render(post);
 		const rawBodyHtml = await container.renderToString(Content);
-		const bodyHtml = absolutizeHtmlUrls(rawBodyHtml, baseUrl);
+		const bodyHtml = cleanFeedHtml(rawBodyHtml, baseUrl);
 
 		const rawThumb = post.data.image;
 		const thumbAlt =
@@ -78,7 +76,6 @@ export const GET: APIRoute = async ({ site }) => {
 				`\t\t\t<description>${escapeXml(post.data.description)}</description>`,
 				`\t\t\t<pubDate>${post.data.pubDate.toUTCString()}</pubDate>`,
 				categoriesXml,
-				`\t\t\t<enclosure url="${escapeXml(thumbUrl)}" length="0" type="${thumbMime}" />`,
 				`\t\t\t<media:content url="${escapeXml(thumbUrl)}" medium="image" type="${thumbMime}" />`,
 				`\t\t\t<content:encoded><![CDATA[${safeCdata}]]></content:encoded>`,
 				'\t\t</item>',
