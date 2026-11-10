@@ -4,6 +4,7 @@ description: "My experience using CachyOS as a daily driver: a look at performan
 pubDate: 2026-10-22
 category: "Linux"
 image: "./thumb.png"
+imageAlt: "CachyOS Linux KDE Plasma desktop showing System Settings, CachyOS Hello welcome window, and Konsole terminal running fastfetch"
 tags: ["linux", "cachyos", "arch", "kde", "experience"]
 ---
 
@@ -21,7 +22,7 @@ The installation is simple. The graphical installer guides you through the setup
 
 After the first boot, a welcome window (CachyOS Hello) opens. It puts the most important things in one place: links to the documentation, additional software, gaming packages and a few settings. This is especially handy at the beginning, because you don't have to go looking for anything.
 
-![Bild1](./bild1.png)
+![CachyOS Hello welcome application window on the KDE Plasma desktop showing links to documentation, support, and system tweaks](./bild1.png)
 
 (I set it up in german, so the welcome screen is also in german)
 

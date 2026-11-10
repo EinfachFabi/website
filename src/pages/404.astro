@@ -1,0 +1,51 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="404 – Page Not Found | EinfachFabi"
+	description="The page you are looking for does not exist or has been moved."
+>
+	<section class="container error-page">
+		<p class="eyebrow">Error 404</p>
+		<h1>Page not found</h1>
+		<p class="lede">
+			The page you are looking for doesn’t exist, was removed, or has moved to a different URL.
+		</p>
+		<div class="error-actions">
+			<a class="btn" href="/">
+				Back to homepage <span aria-hidden="true">→</span>
+			</a>
+			<a class="icon-button error-secondary-btn" href="/posts/">
+				Browse all articles
+			</a>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.error-page {
+		padding-block: clamp(3rem, 8vw, 6rem);
+		max-width: var(--reading);
+		text-align: center;
+	}
+
+	.error-page .lede {
+		margin-inline: auto;
+	}
+
+	.error-actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 1.75rem;
+	}
+
+	.error-secondary-btn {
+		padding: 0.6rem 1.25rem;
+		border-radius: 8px;
+		font-weight: 700;
+	}
+</style>

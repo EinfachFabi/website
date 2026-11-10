@@ -4,6 +4,7 @@ description: "A deep dive into why this self-hosted, database-driven note app be
 pubDate: 2026-10-23
 category: "Notes"
 image: "./thumb.png"
+imageAlt: "Trilium Notes desktop interface showing the hierarchical note tree, rich text editor, and table of contents"
 tags: ["notes", "selfhosted", "docker", "homelab", "productivity"]
 ---
 
@@ -121,7 +122,7 @@ docker compose logs -f
 2. On the welcome screen, select **"New knowledge Base"**.
 3. Set your admin password. That's it—your personal server is online and ready!
 
-![Bild1](./bild1.png)
+![Trilium Notes initial setup screen showing options to create a new knowledge base, connect to an existing server, connect a desktop app, or restore from backup](./bild1.png)
 
 
 **Step 5: Connecting the Desktop App (Linux / Windows)**

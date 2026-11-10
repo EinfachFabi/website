@@ -64,13 +64,14 @@ const techCount = allPosts.filter((p) => p.data.category !== 'Travel').length;
 				});
 				const rawThumb = post.data.image;
 				const fallbackThumb = typeof rawThumb === 'string' ? rawThumb : `/images/thumbs/default.svg`;
+				const thumbAlt = post.data.imageAlt ?? `${post.data.title} – ${post.data.category} article thumbnail`;
 				return (
 					<article
 						class="card card-link"
 						data-category={post.data.category}
 						data-tags={(post.data.tags ?? []).join(',')}
 					>
-						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
+						<a href={`/${post.id}/`} tabindex="-1">
 							{rawThumb && typeof rawThumb !== 'string' ? (
 								<Image
 									src={rawThumb}
@@ -78,10 +79,10 @@ const techCount = allPosts.filter((p) => p.data.category !== 'Travel').length;
 									height={382}
 									format="webp"
 									loading="lazy"
-									alt=""
+									alt={thumbAlt}
 								/>
 							) : (
-								<img src={fallbackThumb} width="680" height="382" loading="lazy" alt="" />
+								<img src={fallbackThumb} width="680" height="382" loading="lazy" alt={thumbAlt} />
 							)}
 						</a>
 						<div class="card-body">

@@ -4,6 +4,7 @@ description: "Stop slow boot times and freezing file managers on Linux by mounti
 pubDate: 2026-10-29
 category: "Linux"
 image: "./thumb.jpeg"
+imageAlt: "Comparison between a 90-second Linux boot hang on /mnt/data and instant network share access using x-systemd.automount"
 tags: ["linux", "nfs", "smb", "nas", "homelab"]
 ---
 

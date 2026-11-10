@@ -16,6 +16,7 @@ const posts = defineCollection({
 			category: z.string().default('Linux'),
 			tags: z.array(z.string()).default([]),
 			image: z.union([image(), z.string()]).optional(),
+			imageAlt: z.string().optional(),
 			featured: z.boolean().default(false),
 			draft: z.boolean().default(false),
 		}),

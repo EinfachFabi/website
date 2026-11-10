@@ -51,9 +51,10 @@ const categories = Array.from(categoryCounts.entries());
 				});
 				const rawThumb = post.data.image;
 				const fallbackThumb = typeof rawThumb === 'string' ? rawThumb : `/images/thumbs/default.svg`;
+				const thumbAlt = post.data.imageAlt ?? `${post.data.title} – ${post.data.category} article thumbnail`;
 				return (
 					<article class="card card-link" data-category={post.data.category}>
-						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
+						<a href={`/${post.id}/`} tabindex="-1">
 							{rawThumb && typeof rawThumb !== 'string' ? (
 								<Image
 									src={rawThumb}
@@ -61,7 +62,7 @@ const categories = Array.from(categoryCounts.entries());
 									height={382}
 									format="webp"
 									loading={idx < 4 ? 'eager' : 'lazy'}
-									alt=""
+									alt={thumbAlt}
 								/>
 							) : (
 								<img
@@ -69,7 +70,7 @@ const categories = Array.from(categoryCounts.entries());
 									width="680"
 									height="382"
 									loading={idx < 4 ? 'eager' : 'lazy'}
-									alt=""
+									alt={thumbAlt}
 								/>
 							)}
 						</a>

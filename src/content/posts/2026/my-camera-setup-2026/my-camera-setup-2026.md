@@ -4,6 +4,7 @@ description: "A look inside my camera backpack and the Gear I take on hikes and 
 pubDate: 2026-11-06
 category: "Travel"
 image: "./thumb.jpeg"
+imageAlt: "Holding a Sony A7 III full-frame camera fitted with a Sigma 24-70mm F2.8 zoom lens"
 tags: ["photography", "camera", "sony", "gear"]
 ---
 
@@ -25,7 +26,7 @@ Before diving into the details, here is the core gear I currently own and pack f
 | Ultra Wide Lens | Viltrox 14mm F4 | Super fun for architecture and creative wide angle perspectives |
 | Accessories | Camera Backpack | Safe carrying on long trails and enough power for multi day trips |
 
-![Camera Equipment](./equipment.jpeg)
+![Flat lay of my photography gear on a wooden floor: Sony A7 III camera body, Sigma 24-70mm F2.8, Viltrox 35mm F1.2, Viltrox 14mm F4, three batteries, and lens caps](./equipment.jpeg)
 
 
 ## The Camera Body: Sony A7 III

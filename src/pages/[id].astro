@@ -1,17 +1,37 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('posts', ({ data }) => !data.draft);
-	return posts.map((post) => ({
-		params: { id: post.id },
-		props: { post },
-	}));
+	const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+	);
+	return posts.map((post) => {
+		const currentTags = new Set(post.data.tags ?? []);
+		const relatedPosts = posts
+			.filter((p) => p.id !== post.id)
+			.map((p) => {
+				const sharedTags = (p.data.tags ?? []).filter((t) => currentTags.has(t)).length;
+				const sameCategory = p.data.category === post.data.category ? 1 : 0;
+				const score = sharedTags * 2 + sameCategory * 3;
+				return { post: p, score };
+			})
+			.sort(
+				(a, b) =>
+					b.score - a.score || b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf()
+			)
+			.slice(0, 3)
+			.map((entry) => entry.post);
+
+		return {
+			params: { id: post.id },
+			props: { post, relatedPosts },
+		};
+	});
 }
 
-const { post } = Astro.props;
+const { post, relatedPosts } = Astro.props;
 const { Content, headings } = await render(post);
 
 const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
@@ -22,10 +42,31 @@ const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
 
 const rawThumb = post.data.image;
 const fallbackThumb = typeof rawThumb === 'string' ? rawThumb : `/images/thumbs/default.svg`;
+const featuredAlt = post.data.imageAlt ?? `${post.data.title} – ${post.data.category} article cover`;
+
+const ogImageAsset =
+	rawThumb && typeof rawThumb !== 'string'
+		? await getImage({
+				src: rawThumb,
+				width: 1200,
+				height: 630,
+				format: 'jpg',
+				quality: 80,
+			})
+		: null;
+const ogImage = ogImageAsset ? ogImageAsset.src : fallbackThumb;
+
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
-<Layout title={`${post.data.title} | FabiTech`} description={post.data.description}>
+<Layout
+	title={`${post.data.title} | EinfachFabi`}
+	description={post.data.description}
+	image={ogImage}
+	imageAlt={featuredAlt}
+	type="article"
+	pubDate={post.data.pubDate}
+>
 	<div class="reading-progress" data-reading-progress aria-hidden="true"></div>
 
 	<article class="article-shell container">
@@ -76,7 +117,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 				<Image
 					class="article-image"
 					src={rawThumb}
-					alt={`${post.data.title} featured image`}
+					alt={featuredAlt}
 					width={1200}
 					height={675}
 					format="webp"
@@ -87,7 +128,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 				<img
 					class="article-image"
 					src={fallbackThumb}
-					alt={`${post.data.title} featured image`}
+					alt={featuredAlt}
 					width="1200"
 					height="675"
 					loading="eager"
@@ -100,6 +141,78 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 			</div>
 		</div>
 	</article>
+
+	{relatedPosts.length > 0 && (
+		<footer class="article-footer container" aria-labelledby="related-heading">
+			<h2 id="related-heading">Related articles</h2>
+			<div class="grid related-grid">
+				{relatedPosts.map((related) => {
+					const relDate = related.data.pubDate.toLocaleDateString('en-US', {
+						year: 'numeric',
+						month: 'long',
+						day: 'numeric',
+					});
+					const relRawThumb = related.data.image;
+					const relFallbackThumb =
+						typeof relRawThumb === 'string' ? relRawThumb : `/images/thumbs/default.svg`;
+					const relAlt =
+						related.data.imageAlt ??
+						`${related.data.title} – ${related.data.category} article thumbnail`;
+					return (
+						<article class="card card-link">
+							<a href={`/${related.id}/`} tabindex="-1">
+								{relRawThumb && typeof relRawThumb !== 'string' ? (
+									<Image
+										src={relRawThumb}
+										width={680}
+										height={382}
+										format="webp"
+										loading="lazy"
+										alt={relAlt}
+									/>
+								) : (
+									<img
+										src={relFallbackThumb}
+										width="680"
+										height="382"
+										loading="lazy"
+										alt={relAlt}
+									/>
+								)}
+							</a>
+							<div class="card-body">
+								<p class="meta">
+									<time datetime={related.data.pubDate.toISOString().slice(0, 10)}>
+										{relDate}
+									</time>
+								</p>
+								<h3>
+									<a href={`/${related.id}/`}>{related.data.title}</a>
+								</h3>
+								<p>{related.data.description}</p>
+								<div class="chips">
+									<a
+										class="chip"
+										href={`/categories/?topic=${encodeURIComponent(related.data.category)}`}
+									>
+										{related.data.category}
+									</a>
+									{related.data.tags?.map((tag) => (
+										<a
+											class="chip chip-tag"
+											href={`/categories/?tag=${encodeURIComponent(tag)}`}
+										>
+											#{tag}
+										</a>
+									))}
+								</div>
+							</div>
+						</article>
+					);
+				})}
+			</div>
+		</footer>
+	)}
 </Layout>
 
 <script>
@@ -321,6 +434,27 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 	.article-body tbody tr:nth-child(even) {
 		background: color-mix(in srgb, var(--surface-2) 45%, transparent);
+	}
+
+	.article-footer {
+		border-top: 1px solid var(--border);
+		margin-top: 2.5rem;
+		padding-top: 1.75rem;
+	}
+
+	.article-footer h2 {
+		margin-top: 0;
+		margin-bottom: 1rem;
+	}
+
+	.related-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	@media (width <= 860px) {
+		.related-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	@media (width <= 940px) {

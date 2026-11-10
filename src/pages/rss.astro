@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="RSS Feeds | EinfachFabi"
+	description="Subscribe to EinfachFabi via RSS to get new Linux guides, homelab notes, and travel stories with full article text and images."
+>
+	<section class="reading rss-page">
+		<header class="article-header">
+			<p class="eyebrow">Subscribe</p>
+			<h1 class="rss-title">RSS Feeds</h1>
+			<p class="lede">
+				Follow new articles in your favorite RSS reader—with full text and images, no algorithms, and no tracking.
+			</p>
+		</header>
+
+		<div class="article-body">
+			<div class="rss-buttons">
+				<a class="primary-button rss-feed-btn" href="/rss.xml">
+					<svg
+						viewBox="0 0 24 24"
+						width="18"
+						height="18"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="3"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<path d="M4 11a9 9 0 0 1 9 9"></path>
+						<path d="M4 4a16 16 0 0 1 16 16"></path>
+						<circle cx="5.5" cy="18.5" r="2.2" fill="currentColor" stroke="none"></circle>
+					</svg>
+					<span>All Articles</span>
+				</a>
+			</div>
+
+			<h2>How to Subscribe</h2>
+			<p>
+				Copy the feed URL into any RSS reader (such as Feeder, NetNewsWire, Feedly, Inoreader, or Thunderbird) to receive full-text articles and images automatically whenever a new post is published:
+			</p>
+			<div class="rss-url-box">
+				<pre><code id="rss-feed-url">https://einfachfabi.com/rss.xml</code></pre>
+				<button type="button" class="rss-copy-btn" data-copy-rss>Copy</button>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const copyBtn = document.querySelector<HTMLButtonElement>('[data-copy-rss]');
+	const feedUrlEl = document.getElementById('rss-feed-url');
+
+	copyBtn?.addEventListener('click', async () => {
+		const url = feedUrlEl?.textContent?.trim() ?? 'https://einfachfabi.com/rss.xml';
+		await navigator.clipboard.writeText(url);
+		copyBtn.textContent = 'Copied!';
+		setTimeout(() => {
+			copyBtn.textContent = 'Copy';
+		}, 1800);
+	});
+</script>
+
+<style>
+	.rss-title {
+		font-size: clamp(2.5rem, 5.2vw, 4rem);
+	}
+
+	.rss-buttons {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin: 1.25rem 0 2rem;
+	}
+
+	.rss-feed-btn {
+		gap: 0.5rem;
+		padding: 0.6rem 1.15rem;
+		font-size: 1rem;
+	}
+
+	.rss-url-box {
+		position: relative;
+		margin: 1rem 0;
+	}
+
+	.rss-url-box pre {
+		border: 1px solid var(--border);
+		color: #eef6fa;
+		border-radius: var(--radius);
+		background: #061019;
+		padding: 0.9rem 4.5rem 0.9rem 0.9rem;
+		margin: 0;
+		overflow: auto;
+	}
+
+	.rss-copy-btn {
+		color: #fff;
+		border-radius: var(--radius);
+		cursor: pointer;
+		background: #142430;
+		border: 1px solid #496173;
+		padding: 0.25rem 0.6rem;
+		font-size: 0.82rem;
+		transition: background-color 0.15s, border-color 0.15s;
+		position: absolute;
+		top: 50%;
+		right: 0.6rem;
+		transform: translateY(-50%);
+	}
+
+	.rss-copy-btn:hover {
+		border-color: var(--accent);
+		background: var(--code-copy-hover-bg);
+	}
+</style>

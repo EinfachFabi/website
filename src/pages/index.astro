@@ -7,10 +7,6 @@ const allPosts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-// 3 Featured posts (either explicitly marked featured: true, or fallback to top 3)
-// const explicitlyFeatured = allPosts.filter((p) => p.data.featured);
-// const featuredPosts = (explicitlyFeatured.length >= 3 ? explicitlyFeatured : allPosts).slice(0, 3);
-
 // Latest posts
 const latestPosts = allPosts.slice(0, 6);
 
@@ -63,64 +59,6 @@ const categories = Array.from(categoryCounts.entries());
 		</div>
 	</section>
 
-	{/*
-	<section class="container home-featured" aria-labelledby="featured-heading">
-		<h2 id="featured-heading">Featured</h2>
-
-		<div class="grid home-three-grid">
-			{featuredPosts.map((post, idx) => {
-				const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
-					year: 'numeric',
-					month: 'long',
-					day: 'numeric',
-				});
-				const rawThumb = post.data.image;
-				const thumb = typeof rawThumb === 'string' ? rawThumb : (rawThumb?.src ?? `/images/thumbs/default.svg`);
-				return (
-					<article class="card card-link">
-						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
-							<img
-								src={thumb}
-								width="640"
-								height="360"
-								loading={idx === 0 ? 'eager' : 'lazy'}
-								alt=""
-							/>
-						</a>
-						<div class="card-body">
-							<p class="meta">
-								<time datetime={post.data.pubDate.toISOString().slice(0, 10)}>
-									{formattedDate}
-								</time>
-							</p>
-							<h3>
-								<a href={`/${post.id}/`}>{post.data.title}</a>
-							</h3>
-							<p>{post.data.description}</p>
-							<div class="chips">
-								<a
-									class="chip"
-									href={`/categories/?topic=${encodeURIComponent(post.data.category)}`}
-								>
-									{post.data.category}
-								</a>
-								{post.data.tags?.map((tag) => (
-									<a
-										class="chip chip-tag"
-										href={`/categories/?tag=${encodeURIComponent(tag)}`}
-									>
-										#{tag}
-									</a>
-								))}
-							</div>
-						</div>
-					</article>
-				);
-			})}
-		</div>
-	</section>
-	*/}
-
 	<section class="container home-latest" aria-labelledby="latest-heading">
 		<h2 id="latest-heading">Latest articles</h2>
 
@@ -133,9 +71,10 @@ const categories = Array.from(categoryCounts.entries());
 				});
 				const rawThumb = post.data.image;
 				const fallbackThumb = typeof rawThumb === 'string' ? rawThumb : `/images/thumbs/default.svg`;
+				const thumbAlt = post.data.imageAlt ?? `${post.data.title} – ${post.data.category} article thumbnail`;
 				return (
 					<article class="card card-link">
-						<a href={`/${post.id}/`} aria-hidden="true" tabindex="-1">
+						<a href={`/${post.id}/`} tabindex="-1">
 							{rawThumb && typeof rawThumb !== 'string' ? (
 								<Image
 									src={rawThumb}
@@ -143,7 +82,7 @@ const categories = Array.from(categoryCounts.entries());
 									height={382}
 									format="webp"
 									loading={idx < 2 ? 'eager' : 'lazy'}
-									alt=""
+									alt={thumbAlt}
 								/>
 							) : (
 								<img
@@ -151,7 +90,7 @@ const categories = Array.from(categoryCounts.entries());
 									width="680"
 									height="382"
 									loading={idx < 2 ? 'eager' : 'lazy'}
-									alt=""
+									alt={thumbAlt}
 								/>
 							)}
 						</a>

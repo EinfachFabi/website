@@ -4,6 +4,7 @@ description: "Here are all the new features in Windows 26H2"
 pubDate: 2026-10-27
 category: "Windows"
 image: "./thumb.jpeg"
+imageAlt: "Laptop on a desk displaying the Windows 11 26H2 blue wallpaper"
 tags: ["windows", "26H2"]
 ---
 
