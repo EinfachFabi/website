@@ -347,15 +347,24 @@ const searchIndex = allPosts.map((p) => ({
 					? `Showing ${matches.length} recent articles:`
 					: `${matches.length} result(s) for "${q}":`;
 
-				searchResults.innerHTML = matches
-					.map(
-						(item) => `
-						<a class="search-result" href="/${item.id}/">
-							<span class="search-result-title">${item.title}</span>
-							<span class="search-result-arrow">→</span>
-						</a>`
-					)
-					.join('');
+				const fragment = document.createDocumentFragment();
+				for (const item of matches) {
+					const link = document.createElement('a');
+					link.className = 'search-result';
+					link.href = '/' + item.id + '/';
+
+					const titleSpan = document.createElement('span');
+					titleSpan.className = 'search-result-title';
+					titleSpan.textContent = item.title;
+
+					const arrowSpan = document.createElement('span');
+					arrowSpan.className = 'search-result-arrow';
+					arrowSpan.textContent = '→';
+
+					link.append(titleSpan, arrowSpan);
+					fragment.appendChild(link);
+				}
+				searchResults.replaceChildren(fragment);
 			}
 
 			searchInput?.addEventListener('input', (e) => {
