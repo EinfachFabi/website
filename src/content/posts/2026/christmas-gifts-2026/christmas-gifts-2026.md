@@ -3,6 +3,7 @@ title: "Christmas Gifts 2026"
 description: "Practical tech, PC hardware, ergonomic chairs, smart lights, and everyday gadget gift ideas for Christmas 2026 & Black Week."
 pubDate: 2026-11-20
 category: "Tech"
+image: "./thumb.jpeg"
 tags: ["gifts", "2026", "blackweek", "gadgets"]
 draft: false
 ---
@@ -11,18 +12,6 @@ With **Black Week** and the holiday season right around the corner, it is the be
 
 Below is my list of Christmas Gifts and Tech Highlights, organized by category with direct, clickable links to each product and deal page.
 
-
-## Quick Overview: All Gift Ideas at a Glance
-
-| Category | Highlight Products | Direct Links |
-| :--- | :--- | :--- |
-| **PC & Peripherals** | Monitors, mice, headsets & keyboards | [Jump to PC](#pc--gaming-peripherals) |
-| **Ergonomic Chairs** | Libernovo Omni Series & Black Friday Sale | [Jump to Chairs](#ergonomic-chairs--desk-comfort) |
-| **Audio / Video** | Soundcore Bluetooth speaker & earbuds | [Jump to Audio / Video](#audio--video) |
-| **Gadgets & Tools** | Precision tools, 3-in-1 charger & pixel clock | [Jump to Gadgets](#gadgets--everyday-tools) |
-| **Smart Lights & WLED** | Govee lighting, WLED controller & matrix display | [Jump to Lights](#smart-lights--ambience) |
-| **Smartphones** | Pixel 11, Galaxy S26+, Nothing Phone 3 & more | [Jump to Smartphones](#smartphones) |
-| **More Deal Categories** | Direct hubs for Electronics, Gaming, DIY & Lightning Deals | [Jump to Deal Hubs](#more-links-to-specific-topics) |
 
 
 ## PC & Gaming Peripherals
